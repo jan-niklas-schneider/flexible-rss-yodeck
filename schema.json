@@ -1,0 +1,356 @@
+{
+  "data": {
+    "feeds": [],
+    "max_items_per_feed": 5,
+    "max_total_items": 12,
+    "rotation_seconds": 12,
+    "refresh_minutes": 15,
+    "header_title": "Latest News",
+    "sort_order": "newest",
+    "layout": "split",
+    "show_source": true,
+    "show_date": true,
+    "show_title": true,
+    "show_description": true,
+    "show_category": false,
+    "show_image": true,
+    "article_image_fallback": true,
+    "description_max_chars": 1500,
+    "date_format": "date",
+    "background_color": "#f4f6f8",
+    "surface_color": "#ffffff",
+    "text_color": "#1c232b",
+    "muted_color": "#66717e",
+    "accent_color": "#00549f",
+    "image_fit": "cover"
+  },
+  "fields": [
+    "feeds",
+    "max_items_per_feed",
+    "max_total_items",
+    "sort_order",
+    "rotation_seconds",
+    "refresh_minutes",
+    "header_title",
+    "layout",
+    "show_source",
+    "show_date",
+    "show_title",
+    "show_description",
+    "show_category",
+    "show_image",
+    "article_image_fallback",
+    "description_max_chars",
+    "date_format",
+    "image_fit",
+    "background_color",
+    "surface_color",
+    "text_color",
+    "muted_color",
+    "accent_color"
+  ],
+  "schema": {
+    "header_title": {
+      "title": "Titel der Anzeige",
+      "type": "Text",
+      "help": "Einziger Titel oben in der Anzeige, z. B. Instituts-News."
+    },
+    "feeds": {
+      "title": "RSS-Feeds",
+      "type": "List",
+      "itemType": "Object",
+      "subSchema": {
+        "enabled": {
+          "title": "Aktiv",
+          "type": "Checkbox"
+        },
+        "heading": {
+          "title": "Überschrift der RSS-Anzeige",
+          "type": "Text",
+          "help": "Optional per-feed heading. Leave empty to use only the global display title."
+        },
+        "label": {
+          "title": "Quellenname (optional)",
+          "type": "Text",
+          "help": "Optional short name identifying the feed source."
+        },
+        "url": {
+          "title": "RSS-URL",
+          "type": "Text",
+          "validators": [
+            "required"
+          ]
+        },
+        "profile": {
+          "title": "RSS-Format",
+          "type": "Select",
+          "options": [
+            {
+              "label": "Automatisch erkennen",
+              "val": "auto"
+            },
+            {
+              "label": "RWTH Standard",
+              "val": "rwth"
+            },
+            {
+              "label": "WordPress",
+              "val": "wordpress"
+            },
+            {
+              "label": "Standard RSS",
+              "val": "standard"
+            }
+          ],
+          "help": "RWTH Standard nutzt typischerweise description; WordPress nutzt bei Bedarf content:encoded."
+        },
+        "max_age_days": {
+          "title": "Maximales Beitragsalter (Tage)",
+          "type": "Number",
+          "editorAttrs": {
+            "min": 0,
+            "max": 3650,
+            "step": 1
+          },
+          "validators": [
+            "required",
+            "number"
+          ],
+          "help": "Nur Beiträge anzeigen, die höchstens so alt sind. 0 = keine Altersbegrenzung."
+        },
+        "text_source": {
+          "title": "Teaser-Text aus",
+          "type": "Select",
+          "options": [
+            {
+              "label": "Automatisch",
+              "val": "auto"
+            },
+            {
+              "label": "description",
+              "val": "description"
+            },
+            {
+              "label": "content:encoded",
+              "val": "content"
+            }
+          ]
+        },
+        "text_selector": {
+          "title": "Optionaler CSS-Selektor für Text",
+          "type": "Text",
+          "help": "z. B. strong oder .et_pb_text_inner strong; leer = automatisch"
+        },
+        "image_source": {
+          "title": "Bildquelle",
+          "type": "Select",
+          "options": [
+            {
+              "label": "Automatisch",
+              "val": "auto"
+            },
+            {
+              "label": "RSS media/enclosure",
+              "val": "feed"
+            },
+            {
+              "label": "Aus description",
+              "val": "description"
+            },
+            {
+              "label": "Aus content:encoded",
+              "val": "content"
+            },
+            {
+              "label": "Nur Artikelseite",
+              "val": "article"
+            },
+            {
+              "label": "Kein Bild",
+              "val": "none"
+            }
+          ]
+        },
+        "image_selector": {
+          "title": "Optionaler CSS-Selektor für Bild",
+          "type": "Text",
+          "help": "z. B. .et_pb_image img; leer = erstes geeignetes Bild"
+        }
+      }
+    },
+    "max_items_per_feed": {
+      "title": "Max. Einträge je Feed",
+      "type": "Number",
+      "editorAttrs": {
+        "min": 1,
+        "max": 50,
+        "step": 1
+      },
+      "validators": [
+        "required",
+        "number"
+      ]
+    },
+    "max_total_items": {
+      "title": "Max. Einträge insgesamt",
+      "type": "Number",
+      "editorAttrs": {
+        "min": 1,
+        "max": 100,
+        "step": 1
+      },
+      "validators": [
+        "required",
+        "number"
+      ]
+    },
+    "sort_order": {
+      "title": "Reihenfolge",
+      "type": "Select",
+      "options": [
+        {
+          "label": "Neueste Meldungen zuerst (Feeds mischen)",
+          "val": "newest"
+        },
+        {
+          "label": "Feed-Reihenfolge beibehalten",
+          "val": "feed"
+        }
+      ]
+    },
+    "rotation_seconds": {
+      "title": "Anzeigezeit pro Meldung (Sekunden)",
+      "type": "Number",
+      "editorAttrs": {
+        "min": 3,
+        "max": 600,
+        "step": 1
+      },
+      "validators": [
+        "required",
+        "number"
+      ]
+    },
+    "refresh_minutes": {
+      "title": "Feeds neu laden (Minuten)",
+      "type": "Number",
+      "editorAttrs": {
+        "min": 1,
+        "max": 1440,
+        "step": 1
+      },
+      "validators": [
+        "required",
+        "number"
+      ]
+    },
+    "layout": {
+      "title": "Layout",
+      "type": "Select",
+      "options": [
+        {
+          "label": "Bild links / Text rechts",
+          "val": "split"
+        },
+        {
+          "label": "Nur Text",
+          "val": "text"
+        },
+        {
+          "label": "Bild vollflächig mit Text-Overlay",
+          "val": "overlay"
+        }
+      ]
+    },
+    "show_source": {
+      "title": "Quelle anzeigen",
+      "type": "Checkbox"
+    },
+    "show_date": {
+      "title": "Datum anzeigen",
+      "type": "Checkbox"
+    },
+    "show_title": {
+      "title": "Titel anzeigen",
+      "type": "Checkbox"
+    },
+    "show_description": {
+      "title": "Teaser/Beschreibung anzeigen",
+      "type": "Checkbox"
+    },
+    "show_category": {
+      "title": "Kategorie anzeigen",
+      "type": "Checkbox"
+    },
+    "show_image": {
+      "title": "Bild anzeigen",
+      "type": "Checkbox"
+    },
+    "article_image_fallback": {
+      "title": "Fehlendes Bild auf Artikelseite suchen",
+      "type": "Checkbox",
+      "help": "Wenn im RSS kein Bild enthalten ist, wird auf der verlinkten Artikelseite nach einem geeigneten Bild gesucht."
+    },
+    "description_max_chars": {
+      "title": "Max. Zeichen im Teaser",
+      "type": "Number",
+      "editorAttrs": {
+        "min": 40,
+        "max": 3000,
+        "step": 10
+      },
+      "validators": [
+        "required",
+        "number"
+      ]
+    },
+    "date_format": {
+      "title": "Datumsformat",
+      "type": "Select",
+      "options": [
+        {
+          "label": "TT.MM.JJJJ",
+          "val": "date"
+        },
+        {
+          "label": "TT.MM.JJJJ HH:MM",
+          "val": "datetime"
+        }
+      ]
+    },
+    "image_fit": {
+      "title": "Bildanpassung",
+      "type": "Select",
+      "options": [
+        {
+          "label": "Fläche füllen (crop)",
+          "val": "cover"
+        },
+        {
+          "label": "Ganzes Bild zeigen",
+          "val": "contain"
+        }
+      ]
+    },
+    "background_color": {
+      "title": "Außenhintergrund",
+      "type": "SpectrumColorPicker"
+    },
+    "surface_color": {
+      "title": "Kartenhintergrund",
+      "type": "SpectrumColorPicker"
+    },
+    "text_color": {
+      "title": "Textfarbe",
+      "type": "SpectrumColorPicker"
+    },
+    "muted_color": {
+      "title": "Sekundärtext",
+      "type": "SpectrumColorPicker"
+    },
+    "accent_color": {
+      "title": "Akzentfarbe",
+      "type": "SpectrumColorPicker"
+    }
+  }
+}

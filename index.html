@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Flexible RSS Display</title>
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+  <link rel="stylesheet" href="style.css?v=6">
+</head>
+<body>
+  <main id="app" class="app" aria-live="polite">
+    <section id="slide" class="slide is-loading">
+      <div id="media" class="media" aria-hidden="true">
+        <img id="image" alt="">
+        <div class="media-fallback"></div>
+      </div>
+
+      <div class="content">
+        <div class="brand-bar">
+          <div id="headerTitle" class="brand-tag">Latest News</div>
+        </div>
+
+        <div class="meta-row">
+          <span id="source" class="source"></span>
+          <span id="category" class="category"></span>
+          <span id="date" class="date"></span>
+        </div>
+
+        <h1 id="title" class="title">RSS wird geladen …</h1>
+        <div id="descriptionViewport" class="description-viewport">
+          <p id="description" class="description"></p>
+        </div>
+
+        <div class="content-footer">
+          <div class="progress" aria-hidden="true"><div id="progressBar" class="progress-bar"></div></div>
+
+          <a id="qrBox" class="qr-box" href="#" target="_blank" rel="noopener noreferrer" hidden>
+            <img id="qrImage" alt="QR-Code zum Artikel">
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="status" class="status" hidden>
+      <div class="status-card">
+        <strong id="statusTitle">Keine RSS-Daten verfügbar</strong>
+        <div id="statusText"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js?v=6"></script>
+</body>
+</html>

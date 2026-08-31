@@ -1,0 +1,54 @@
+name: Build Yodeck package
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate configuration
+        run: python3 -m json.tool schema.json > /dev/null
+
+      - name: Build Yodeck ZIP
+        run: |
+          mkdir -p dist/package
+          cp index.html app.js style.css dist/package/
+          cd dist/package
+          zip -9 ../flexible-rss-yodeck.zip index.html app.js style.css
+
+      - name: Verify package layout
+        run: |
+          unzip -t dist/flexible-rss-yodeck.zip
+          test "$(unzip -Z1 dist/flexible-rss-yodeck.zip | grep -c '^index.html$')" -eq 1
+          cp schema.json dist/schema.json
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flexible-rss-yodeck
+          path: |
+            dist/flexible-rss-yodeck.zip
+            dist/schema.json
+          retention-days: 30
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            dist/flexible-rss-yodeck.zip \
+            dist/schema.json \
+            --verify-tag \
+            --generate-notes \
+            --title "Flexible RSS ${GITHUB_REF_NAME}"
