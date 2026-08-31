@@ -26,7 +26,7 @@ body {
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 0;
   background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(250,252,254,1) 100%);
   border-radius: var(--radius);
@@ -114,21 +114,40 @@ body {
   font-weight: 600;
 }
 .title {
-  font-size: clamp(34px, 3.25vw, 66px);
-  line-height: 1.07;
+  font-size: clamp(32px, 3vw, 64px);
+  line-height: 1.12;
   letter-spacing: -.025em;
   margin: 0;
-  max-width: 20ch;
+  max-width: none;
   overflow-wrap: anywhere;
+  word-break: break-word;
+  display: block;
+  max-height: calc(1.12em * 4);
+  overflow: hidden;
+}
+.title.is-long-title {
+  font-size: clamp(32px, 3vw, 64px);
+  line-height: 1.12;
+  max-width: none;
+  word-break: break-word;
+  display: block;
+  max-height: calc(1.12em * 4);
+  overflow: hidden;
 }
 .description-viewport {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: stretch;
+  min-height: 0;
   font-size: clamp(20px, 1.45vw, 30px);
   line-height: 1.48;
   margin: clamp(22px, 2.2vw, 36px) 0 0;
-  max-height: calc(1.48em * 6);
+  max-height: none;
   overflow: hidden;
 }
 .description {
+  display: block;
+  width: 100%;
   font: inherit;
   color: var(--muted);
   margin: 0;
@@ -144,14 +163,15 @@ body {
 }
 .content-footer {
   display: flex;
+  flex-direction: column;
   align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
-  margin-top: auto;
-  padding-top: 24px;
+  gap: 12px;
+  margin-top: 0;
+  padding-top: 12px;
 }
 .progress {
-  width: min(420px, 66%);
+  width: 100%;
+  min-width: 0;
   height: 5px;
   background: rgba(0, 84, 159, .12);
   border-radius: 99px;
@@ -186,7 +206,7 @@ body {
 body.layout-text .slide { grid-template-columns: 1fr; }
 body.layout-text .media { display: none; }
 body.layout-text .content { padding: clamp(40px, 4.8vw, 90px); }
-body.layout-text .title { max-width: 26ch; font-size: clamp(38px, 3.7vw, 78px); }
+body.layout-text .title { max-width: 26ch; font-size: clamp(32px, 3vw, 64px); }
 body.layout-text .description-viewport { font-size: clamp(22px, 1.7vw, 34px); }
 body.layout-text .description { max-width: 72ch; }
 body.layout-text .content-footer { gap: 30px; }
@@ -251,10 +271,10 @@ body.no-image .description { max-width: 70ch; }
     gap: 0;
   }
   .content { padding: 28px 34px 30px; }
-  .title { font-size: clamp(30px, 4.7vw, 56px); max-width: 25ch; }
+  .title { font-size: clamp(32px, 3vw, 64px); max-width: 25ch; }
   .description-viewport { font-size: clamp(18px, 2.4vw, 28px); }
   .content-footer { align-items: center; }
-  .progress { width: min(360px, 58%); }
+  .progress { width: 100%; max-width: none; }
   .qr-box { width: 92px; padding: 0; }
   .qr-box img { width: 92px; height: 92px; }
 }

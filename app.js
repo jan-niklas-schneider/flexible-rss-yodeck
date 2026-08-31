@@ -9,7 +9,6 @@ const DEFAULT_CONFIG = {
   max_total_items: 12,
   rotation_seconds: 12,
   refresh_minutes: 15,
-  header_title: 'Latest News',
   sort_order: 'newest',
   layout: 'split',
   show_source: true,
@@ -427,7 +426,8 @@ function renderItem(item, animate = true) {
   const doRender = () => {
     document.body.classList.toggle('no-image', !config.show_image || !item.image);
 
-    el.headerTitle.textContent = config.header_title || DEFAULT_CONFIG.header_title;
+    const headerText = item.heading || item.source || 'RSS';
+    el.headerTitle.textContent = headerText;
 
     el.source.hidden = true;
     el.source.textContent = item.source || '';
@@ -440,6 +440,7 @@ function renderItem(item, animate = true) {
 
     el.title.hidden = !config.show_title || !item.title;
     el.title.textContent = item.title || '';
+    el.title.classList.remove('is-long-title');
 
     el.description.hidden = !config.show_description || !item.description;
     el.description.textContent = item.description || '';
@@ -477,6 +478,7 @@ function setupDescriptionScroll() {
   el.description.classList.remove('is-scrolling');
   el.description.style.removeProperty('--scroll-distance');
   el.description.style.removeProperty('--scroll-duration');
+
   requestAnimationFrame(() => requestAnimationFrame(() => {
     const distance = Math.ceil(el.description.scrollHeight - el.descriptionViewport.clientHeight);
     if (distance <= 2) return;
@@ -650,7 +652,6 @@ function normalizeConfig(c) {
   c.sort_order = String(c.sort_order || 'newest').toLowerCase();
   c.date_format = String(c.date_format || 'date').toLowerCase();
   c.image_fit = String(c.image_fit || 'cover').toLowerCase();
-  c.header_title = String(c.header_title || DEFAULT_CONFIG.header_title).trim();
 }
 
 function mergeConfig(base, extra) {
