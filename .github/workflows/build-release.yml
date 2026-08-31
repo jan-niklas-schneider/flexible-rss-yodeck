@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Validate configuration
         run: python3 -m json.tool schema.json > /dev/null
@@ -33,7 +33,7 @@ jobs:
           cp schema.json dist/schema.json
 
       - name: Upload workflow artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: flexible-rss-yodeck
           path: |
