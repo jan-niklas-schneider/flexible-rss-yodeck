@@ -18,7 +18,7 @@ The app supports feed images, article-page image fallbacks, a configurable heade
 - Automatically scrolling descriptions when the available space is insufficient
 - Optional publication date, article title, description, category, image, and QR code
 - Automatic skipping of empty feeds
-- No bundled feed URLs: administrators add only the sources they want to display
+- A ready-to-use tagesschau.de homepage feed as the initial example; administrators can replace or remove it
 
 ## Download
 
@@ -44,6 +44,10 @@ The ZIP contains `index.html`, `app.js`, and `style.css` directly at its root, a
 11. Save and use **Push to Screens** so the player receives the new app and configuration.
 
 Yodeck requires `index.html` at the root of the uploaded ZIP. The automated build packages it correctly. See the official [HTML App guide](https://www.yodeck.com/docs/user-manual/build-an-html-widget/) and [packaging requirements](https://www.yodeck.com/docs/user-manual/html-widget-packaging/) for details.
+
+`schema.json` is not loaded automatically from the uploaded ZIP. When creating or updating the custom HTML app, paste the complete contents of the separately downloaded `schema.json` into Yodeck's **UI Configuration** field. Without its `fields` and `schema` sections, Yodeck cannot generate the settings form.
+
+The default configuration uses the official tagesschau.de homepage RSS feed so a new installation can render a preview immediately. Replace or remove this example as needed. Check the publisher's current usage terms before showing third-party feed content, particularly on public or commercial displays.
 
 ## Configuration
 

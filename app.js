@@ -4,7 +4,20 @@ const QUERY = new URLSearchParams(location.search);
 const LOCAL_TEST = QUERY.get('test') === '1';
 
 const DEFAULT_CONFIG = {
-  feeds: [],
+  feeds: [
+    {
+      enabled: true,
+      heading: 'Latest News',
+      label: 'tagesschau.de',
+      url: 'https://www.tagesschau.de/index~rss2.xml',
+      profile: 'standard',
+      max_age_days: 7,
+      text_source: 'auto',
+      text_selector: '',
+      image_source: 'auto',
+      image_selector: ''
+    }
+  ],
   max_items_per_feed: 5,
   max_total_items: 12,
   rotation_seconds: 12,
