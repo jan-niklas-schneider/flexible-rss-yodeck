@@ -32,11 +32,8 @@ body {
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: none;
-  opacity: 1;
-  transition: opacity .45s ease;
   border: 0;
 }
-.slide.is-transitioning { opacity: 0; }
 .slide.is-loading .progress { opacity: .3; }
 
 .media {
@@ -54,7 +51,6 @@ body {
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  transition: opacity .35s ease;
 }
 .media.has-image img { opacity: 1; }
 .media-fallback {

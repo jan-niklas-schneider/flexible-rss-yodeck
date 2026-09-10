@@ -278,7 +278,7 @@ async function enrichMissingImages(list, generation) {
     const mode = (item.feed.image_source || 'auto').toLowerCase();
     return !item.image && item.link && mode !== 'none' && (mode === 'article' || config.article_image_fallback);
   });
-  const concurrency = 4;
+  const concurrency = 2;
   let cursor = 0;
 
   async function worker() {
@@ -432,7 +432,7 @@ function looksLikeImageUrl(value) {
     || /(?:image|img|photo|thumbnail|featured)/i.test(String(value || ''));
 }
 
-function renderItem(item, animate = true) {
+function renderItem(item) {
   if (!item) return;
   hideStatus();
 
@@ -474,16 +474,9 @@ function renderItem(item, animate = true) {
       el.media.classList.remove('has-image');
     }
 
-    el.slide.classList.remove('is-transitioning');
     startProgress();
   };
-
-  if (animate) {
-    el.slide.classList.add('is-transitioning');
-    setTimeout(doRender, 320);
-  } else {
-    doRender();
-  }
+  doRender();
 }
 
 function setupDescriptionScroll() {
