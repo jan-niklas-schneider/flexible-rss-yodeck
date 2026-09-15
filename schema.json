@@ -15,7 +15,6 @@
       }
     ],
     "max_items_per_feed": 5,
-    "max_total_items": 12,
     "rotation_seconds": 12,
     "refresh_minutes": 15,
     "sort_order": "newest",
@@ -27,6 +26,8 @@
     "show_category": false,
     "show_image": true,
     "article_image_fallback": true,
+    "fallback_image_url": "",
+    "title_font_size": 30,
     "description_max_chars": 1500,
     "date_format": "date",
     "background_color": "#f4f6f8",
@@ -39,7 +40,6 @@
   "fields": [
     "feeds",
     "max_items_per_feed",
-    "max_total_items",
     "sort_order",
     "rotation_seconds",
     "refresh_minutes",
@@ -50,6 +50,8 @@
     "show_category",
     "show_image",
     "article_image_fallback",
+    "fallback_image_url",
+    "title_font_size",
     "description_max_chars",
     "date_format",
     "image_fit",
@@ -180,6 +182,11 @@
           "title": "Optionaler CSS-Selektor für Bild",
           "type": "Text",
           "help": "z. B. .et_pb_image img; leer = erstes geeignetes Bild"
+        },
+        "backup_image": {
+          "title": "Backup-Bild",
+          "type": "Media",
+          "help": "Wird feedbezogen angezeigt, wenn kein Artikelbild verfügbar ist."
         }
       }
     },
@@ -189,19 +196,6 @@
       "editorAttrs": {
         "min": 1,
         "max": 50,
-        "step": 1
-      },
-      "validators": [
-        "required",
-        "number"
-      ]
-    },
-    "max_total_items": {
-      "title": "Max. Einträge insgesamt",
-      "type": "Number",
-      "editorAttrs": {
-        "min": 1,
-        "max": 100,
         "step": 1
       },
       "validators": [
@@ -291,6 +285,20 @@
       "title": "Fehlendes Bild auf Artikelseite suchen",
       "type": "Checkbox",
       "help": "Wenn im RSS kein Bild enthalten ist, wird auf der verlinkten Artikelseite nach einem geeigneten Bild gesucht."
+    },
+    "title_font_size": {
+      "title": "Titel-Schriftgröße (px)",
+      "type": "Number",
+      "editorAttrs": {
+        "min": 12,
+        "max": 72,
+        "step": 1
+      },
+      "validators": [
+        "required",
+        "number"
+      ],
+      "help": "Feste Schriftgröße für den Titel."
     },
     "description_max_chars": {
       "title": "Max. Zeichen im Teaser",

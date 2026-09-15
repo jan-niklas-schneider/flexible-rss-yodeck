@@ -15,11 +15,11 @@ const DEFAULT_CONFIG = {
       text_source: 'auto',
       text_selector: '',
       image_source: 'auto',
-      image_selector: ''
+      image_selector: '',
+      backup_image: ''
     }
   ],
   max_items_per_feed: 5,
-  max_total_items: 12,
   rotation_seconds: 12,
   refresh_minutes: 15,
   sort_order: 'newest',
@@ -32,7 +32,9 @@ const DEFAULT_CONFIG = {
   show_image: true,
   show_qr: true,
   article_image_fallback: true,
-  description_max_chars: 1500,
+  fallback_image_url: '',
+  title_font_size: 30,
+  description_max_chars: 420,
   date_format: 'date',
   background_color: '#eef3f7',
   surface_color: '#ffffff',
@@ -60,6 +62,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   el.slide = document.getElementById('slide');
   el.media = document.getElementById('media');
   el.image = document.getElementById('image');
+  el.fallback = document.querySelector('.media-fallback');
   el.headerTitle = document.getElementById('headerTitle');
   el.source = document.getElementById('source');
   el.category = document.getElementById('category');
@@ -148,8 +151,6 @@ async function performLoadFeeds() {
   } else {
     merged.sort((a, b) => (a.feedIndex - b.feedIndex) || (a.itemIndex - b.itemIndex));
   }
-  merged = merged.slice(0, clampInt(config.max_total_items, 1, 100, 12));
-
   const needsArticleImages = merged.some(item => (item.feed.image_source || 'auto').toLowerCase() === 'article');
   if (config.show_image && (config.article_image_fallback || needsArticleImages)) {
     await enrichMissingImages(merged, generation);
@@ -437,8 +438,6 @@ function renderItem(item) {
   hideStatus();
 
   const doRender = () => {
-    document.body.classList.toggle('no-image', !config.show_image || !item.image);
-
     const headerText = item.heading || item.source || 'RSS';
     el.headerTitle.textContent = headerText;
 
@@ -454,44 +453,90 @@ function renderItem(item) {
     el.title.hidden = !config.show_title || !item.title;
     el.title.textContent = item.title || '';
     el.title.classList.remove('is-long-title');
+    fitTitle();
 
     el.description.hidden = !config.show_description || !item.description;
     el.description.textContent = item.description || '';
     el.descriptionViewport.hidden = el.description.hidden;
-    setupDescriptionScroll();
+    fitDescription();
 
     renderQr(item);
 
-    if (config.show_image && item.image) {
+    const image = item.image || item.feed.backup_image || config.fallback_image_url;
+    document.body.classList.toggle('no-image', !config.show_image || !image);
+
+    if (config.show_image && image) {
       el.media.classList.remove('has-image');
       el.image.alt = item.title || '';
       el.image.onload = () => el.media.classList.add('has-image');
-      el.image.onerror = () => el.media.classList.remove('has-image');
-      el.image.src = localAssetUrl(item.image);
+      el.image.onerror = () => {
+        const fallback = localAssetUrl(item.feed.backup_image || config.fallback_image_url);
+        if (fallback && el.image.src !== new URL(fallback, location.href).href) {
+          el.image.src = fallback;
+          return;
+        }
+        el.media.classList.remove('has-image');
+        document.body.classList.add('no-image');
+      };
+      el.image.src = localAssetUrl(image);
       if (el.image.complete && el.image.naturalWidth) el.media.classList.add('has-image');
     } else {
       el.image.removeAttribute('src');
       el.media.classList.remove('has-image');
     }
 
-    startProgress();
   };
   doRender();
 }
 
-function setupDescriptionScroll() {
-  if (!el.description || !el.descriptionViewport || el.description.hidden) return;
-  el.description.classList.remove('is-scrolling');
-  el.description.style.removeProperty('--scroll-distance');
-  el.description.style.removeProperty('--scroll-duration');
+function fitTitle() {
+  if (!el.title || el.title.hidden) return;
+  el.title.style.maxHeight = 'none';
+  requestAnimationFrame(() => {
+    let fontSize = clampInt(config.title_font_size, 12, 72, 30);
+    el.title.style.fontSize = `${fontSize}px`;
+    while (fontSize > 12 && el.title.scrollHeight > parseFloat(getComputedStyle(el.title).lineHeight) * 3 + 1) {
+      fontSize -= 1;
+      el.title.style.fontSize = `${fontSize}px`;
+    }
+    const lineHeight = parseFloat(getComputedStyle(el.title).lineHeight) || fontSize * 1.1;
+    el.title.style.maxHeight = `${Math.ceil(lineHeight * 3)}px`;
+    el.title.style.overflow = 'hidden';
+  });
+}
 
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    const distance = Math.ceil(el.description.scrollHeight - el.descriptionViewport.clientHeight);
-    if (distance <= 2) return;
-    el.description.style.setProperty('--scroll-distance', `${distance}px`);
-    el.description.style.setProperty('--scroll-duration', `${Math.max(10, distance / 18).toFixed(1)}s`);
-    el.description.classList.add('is-scrolling');
-  }));
+function fitDescription() {
+  if (!el.description || !el.descriptionViewport || el.description.hidden) return;
+  requestAnimationFrame(() => {
+    const lineHeight = parseFloat(getComputedStyle(el.description).lineHeight) || 27;
+    const maxHeight = Math.ceil(lineHeight * 8);
+    const fullText = el.description.textContent || '';
+    el.descriptionViewport.style.flexBasis = `${maxHeight}px`;
+    el.descriptionViewport.style.maxHeight = `${maxHeight}px`;
+    el.description.style.maxHeight = `${maxHeight}px`;
+    el.description.style.overflow = 'hidden';
+
+    if (el.description.scrollHeight <= maxHeight + 1) return;
+
+    let low = 0;
+    let high = fullText.length;
+    let best = '....';
+    while (low <= high) {
+      const middle = Math.floor((low + high) / 2);
+      const candidate = `${fullText.slice(0, middle).trimEnd()}....`;
+      el.description.textContent = candidate;
+      if (el.description.scrollHeight <= maxHeight + 1) {
+        best = candidate;
+        low = middle + 1;
+      } else {
+        high = middle - 1;
+      }
+    }
+    const lastSpace = best.lastIndexOf(' ');
+    el.description.textContent = lastSpace > 0
+      ? `${best.slice(0, lastSpace).trim()}....`
+      : best;
+  });
 }
 
 function localAssetUrl(url) {
@@ -511,7 +556,7 @@ function renderQr(item) {
     el.qrImage.removeAttribute('src');
     return;
   }
-  const size = 112;
+  const size = 72;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&margin=0&data=${encodeURIComponent(item.link)}`;
   el.qrBox.href = item.link;
   el.qrImage.src = qrUrl;
@@ -575,7 +620,14 @@ function applyTheme() {
   root.style.setProperty('--accent', normalizeColor(config.accent_color, DEFAULT_CONFIG.accent_color));
   document.body.classList.remove('layout-split', 'layout-text', 'layout-overlay');
   document.body.classList.add(`layout-${['split','text','overlay'].includes(config.layout) ? config.layout : 'split'}`);
+  document.documentElement.style.setProperty('--title-font-size', `${clampInt(config.title_font_size, 12, 72, 30)}px`);
   if (el.image) el.image.style.objectFit = config.image_fit === 'contain' ? 'contain' : 'cover';
+  if (el.fallback) {
+    const fallback = localAssetUrl(config.fallback_image_url);
+    el.fallback.style.backgroundImage = fallback
+      ? `url("${fallback.replace(/(["\\])/g, '\\$1')}")`
+      : '';
+  }
 }
 
 function showEmpty() {

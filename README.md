@@ -60,7 +60,8 @@ The most important settings in the generated Yodeck form are:
 - **Maximum article age**: older articles are hidden; `0` disables the age limit.
 - **Text source** and **image source**: automatic detection or an explicit source.
 - **Optional CSS selectors**: advanced overrides for unusual feed or article markup.
-- **Items per feed / total items**: limits for the rotation.
+- **Items per feed**: maximum number of articles loaded from each feed.
+- **Backup image**: optional media selected per feed and shown when no article image is available.
 - **Display time**: number of seconds each article remains visible.
 - **Refresh interval**: how often feeds are downloaded again.
 - **Order**: mix all feeds by date or preserve feed order.
