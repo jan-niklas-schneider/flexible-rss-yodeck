@@ -14,7 +14,6 @@
         "max_age_days": 7
       }
     ],
-    "max_items_per_feed": 5,
     "rotation_seconds": 12,
     "refresh_minutes": 15,
     "sort_order": "newest",
@@ -39,7 +38,6 @@
   },
   "fields": [
     "feeds",
-    "max_items_per_feed",
     "sort_order",
     "rotation_seconds",
     "refresh_minutes",
@@ -125,6 +123,19 @@
           ],
           "help": "Nur Beiträge anzeigen, die höchstens so alt sind. 0 = keine Altersbegrenzung."
         },
+        "max_items": {
+          "title": "Max. Einträge für diesen Feed",
+          "type": "Number",
+          "editorAttrs": {
+            "min": 1,
+            "max": 50,
+            "step": 1
+          },
+          "validators": [
+            "required",
+            "number"
+          ]
+        },
         "text_source": {
           "title": "Teaser-Text aus",
           "type": "Select",
@@ -185,23 +196,10 @@
         },
         "backup_image": {
           "title": "Backup-Bild",
-          "type": "Media",
+          "type": "Image",
           "help": "Wird feedbezogen angezeigt, wenn kein Artikelbild verfügbar ist."
         }
       }
-    },
-    "max_items_per_feed": {
-      "title": "Max. Einträge je Feed",
-      "type": "Number",
-      "editorAttrs": {
-        "min": 1,
-        "max": 50,
-        "step": 1
-      },
-      "validators": [
-        "required",
-        "number"
-      ]
     },
     "sort_order": {
       "title": "Reihenfolge",

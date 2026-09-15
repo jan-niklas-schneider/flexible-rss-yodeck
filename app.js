@@ -12,6 +12,7 @@ const DEFAULT_CONFIG = {
       url: 'https://www.tagesschau.de/index~rss2.xml',
       profile: 'standard',
       max_age_days: 7,
+      max_items: 5,
       text_source: 'auto',
       text_selector: '',
       image_source: 'auto',
@@ -19,7 +20,6 @@ const DEFAULT_CONFIG = {
       backup_image: ''
     }
   ],
-  max_items_per_feed: 5,
   rotation_seconds: 12,
   refresh_minutes: 15,
   sort_order: 'newest',
@@ -186,7 +186,7 @@ async function loadSingleFeed(rawFeed, feedIndex) {
     const channelTitle = directChildText(doc.querySelector('channel'), 'title') || label;
     const itemNodes = Array.from(doc.getElementsByTagName('item'));
     const nodes = itemNodes.length ? itemNodes : Array.from(doc.getElementsByTagNameNS('*', 'entry'));
-    const maxItems = clampInt(config.max_items_per_feed, 1, 50, 5);
+    const maxItems = clampInt(feed.max_items, 1, 50, 5);
     const parsed = nodes
       .map((node, itemIndex) => parseItem(node, feed, feedIndex, itemIndex, channelTitle))
       .filter(Boolean)
@@ -696,10 +696,12 @@ function normalizeFeed(feed) {
     url: String(feed.url || '').trim(),
     profile: normalizeProfile(feed.profile),
     max_age_days: clampInt(feed.max_age_days, 0, 3650, 0),
+    max_items: clampInt(feed.max_items, 1, 50, 5),
     text_source: String(feed.text_source || 'auto').toLowerCase(),
     text_selector: String(feed.text_selector || '').trim(),
     image_source: String(feed.image_source || 'auto').toLowerCase(),
-    image_selector: String(feed.image_selector || '').trim()
+    image_selector: String(feed.image_selector || '').trim(),
+    backup_image: String(feed.backup_image || '').trim()
   };
 }
 
